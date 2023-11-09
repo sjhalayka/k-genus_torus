@@ -16,16 +16,18 @@ float f(const float x, const int n)
 
 float g(const float x, const float y, const int n) 
 {
-	return f(x, n) + powf(y, 2.0);
+	return powf(f(x, n), 1.0f) + powf(y, 2.0f);
 }
 
 float h(const float x, const float y, const float z, const int n, const float r, const float R)
 {
-	return powf(g(x, y, n), 1.0) + powf(z, 2.0) - powf(r, 2.0);
+	return powf(g(x, y, n), 1.0f) + powf(z, 2.0f) - powf(r, 2.0f);
 }
 
-
-
+float h1(const float x, const float y, const float z, const int n, const float r, const float R)
+{
+	return powf(x*x + y*y + z*z + R*R - r*r, 2.0f) - 4.0f * R*R * (x*x + y*y);
+}
 
 
 
@@ -62,7 +64,7 @@ int main(void)
 			if (true == make_border && (x == 0 || y == 0 || z == 0 || x == res - 1 || y == res - 1 || z == res - 1))
 				xyplane0[x * res + y] = border_value;
 			else
-				xyplane0[x * res + y] = h(pos.x, pos.y, pos.z, n, radius, outer_radius);
+				xyplane0[x * res + y] = h1(pos.x, pos.y, pos.z, n, radius, outer_radius);
 		}
 	}
 
@@ -88,7 +90,7 @@ int main(void)
 				if (true == make_border && (x == 0 || y == 0 || z == 0 || x == res - 1 || y == res - 1 || z == res - 1))
 					xyplane1[x * res + y] = border_value;
 				else
-					xyplane1[x * res + y] = h(pos.x, pos.y, pos.z, n, radius, outer_radius);
+					xyplane1[x * res + y] = h1(pos.x, pos.y, pos.z, n, radius, outer_radius);
 			}
 		}
 
