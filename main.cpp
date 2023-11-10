@@ -3,181 +3,26 @@
 
 
 
-void create_torus(vector<triangle> &triangles)
+float h1(const vertex_3& centre, const vertex_3& pos, const int n, const float r, const float R)
 {
-	triangles.clear();
+	float x = centre.x - pos.x;
+	float y = centre.y - pos.y;
+	float z = centre.z - pos.z;
 
-	const float pi = 4.0f * atanf(1.0f);
-
-	float major_radius = 1.0f;
-	float minor_radius = 0.3f;
-
-	float genus_radius = 0.2f; // radius for the genus
-
-	int slices = 100;
-	int stacks = 100;
-
-	for (int i = 0; i < slices; ++i)
-	{
-		float theta1 = i * 2.0f * pi / slices;
-		float theta2 = (i + 1) * 2.0f * pi / slices;
-
-		for (int j = 0; j < stacks; ++j)
-		{
-			float phi1 = j * 2.0f * pi / stacks;
-			float phi2 = (j + 1.0) * 2.0f * pi / stacks;
-
-			vertex_3 p1((major_radius + minor_radius * cos(theta1)) * cos(phi1),
-				(major_radius + minor_radius * cos(theta1)) * sin(phi1),
-				minor_radius * sin(theta1));
-
-			vertex_3 p2((major_radius + minor_radius * cos(theta2)) * cos(phi1),
-				(major_radius + minor_radius * cos(theta2)) * sin(phi1),
-				minor_radius * sin(theta2));
-
-			vertex_3 p3((major_radius + minor_radius * cos(theta2)) * cos(phi2),
-				(major_radius + minor_radius * cos(theta2)) * sin(phi2),
-				minor_radius * sin(theta2));
-
-			vertex_3 p4((major_radius + minor_radius * cos(theta1)) * cos(phi2),
-				(major_radius + minor_radius * cos(theta1)) * sin(phi2),
-				minor_radius * sin(theta1));
-
-			triangle a;
-
-			a.vertex[0] = p3;
-			a.vertex[1] = p2;
-			a.vertex[2] = p1;
-			triangles.push_back(a);
-			//torus.make_triangle(p1, p2, p3);
-			
-			a.vertex[0] = p4;
-			a.vertex[1] = p3;
-			a.vertex[2] = p1;
-			triangles.push_back(a);		
-	//		torus.make_triangle(p1, p3, p4);
-
-			// Extra loops for the genus
-			for (int k = 0; k < 100; ++k)
-			{
-				float psi1 = k * 2.0f * pi / 5.0;
-				float psi2 = (k + 1.0f) * 2.0f * pi / 5.0;
-
-				vertex_3 p5((major_radius + genus_radius * cos(psi1)) * cos(phi1),
-					(major_radius + genus_radius * cos(psi1)) * sin(phi1),
-					genus_radius * sin(psi1));
-
-				vertex_3 p6((major_radius + genus_radius * cos(psi2)) * cos(phi1),
-					(major_radius + genus_radius * cos(psi2)) * sin(phi1),
-					genus_radius * sin(psi2));
-
-				vertex_3 p7((major_radius + genus_radius * cos(psi2)) * cos(phi2),
-					(major_radius + genus_radius * cos(psi2)) * sin(phi2),
-					genus_radius * sin(psi2));
-
-				vertex_3 p8((major_radius + genus_radius * cos(psi1)) * cos(phi2),
-					(major_radius + genus_radius * cos(psi1)) * sin(phi2),
-					genus_radius * sin(psi1));
-
-				
-				
-				
-				a.vertex[0] = p7;
-				a.vertex[1] = p6;
-				a.vertex[2] = p5;
-				triangles.push_back(a);
-				//torus.make_triangle(p5, p6, p7);
-				
-				
-				
-				a.vertex[0] = p8;
-				a.vertex[1] = p7;
-				a.vertex[2] = p5;
-				triangles.push_back(a);
-				//torus.make_triangle(p5, p7, p8);
-			}
-		}
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-float f(const float x, const int n)
-{
-	float result = 1.0;
-
-	for (int i = 1; i <= n; i++)
-	{
-		const float i_float = static_cast<float>(i);
-
-		result *= (result - (i_float - 1.0f)) * (result - i_float);
-	}
-
-	return result;
-}
-
-float h(const float x, const float y, const float z, const int n, const float r, const float R)
-{
-	return f(x, n) + powf(y, 2.0f) + powf(z, 2.0) - powf(r, 2.0);
-}
-
-
-
-
-
-
-
-float h1(const float x, const float y, const float z, const int n, const float r, const float R)
-{
 	return powf(x * x + y * y + z * z + R * R - r * r, 2.0f) - 4.0f * R * R * (x * x + y * y);
 }
-
-float h2(const float x, const float y, const float z, const int n, const float r, const float R)
-{
-	return powf(R - sqrt(x * x + y * y), 2.0f) + z * z - r * r;
-}
-
-float h3(const float x, const float y, const float z, const int n, const float r, const float R)
-{
-	return powf(x * x + y * y + z * z + r * r - R * R, 3.0f) - 4.0f * R * R * (x * x + y * y) - 4.0f * (z * z);
-}
-
 
 
 
 int main(void)
 {
-
-
-	
-
-
 	const float grid_max = 5.0;
 	const float grid_min = -grid_max;
-	const size_t res = 100;
+	const size_t res = 300;
 	const bool make_border = true;
 	const float isovalue = 0.001f;
 	const float border_value = 1.0f + isovalue;
-	const int n = 1;
+	const int genus = 1;
 	const float radius = 0.1f;
 	const float outer_radius = 1.0f;
 
@@ -185,14 +30,13 @@ int main(void)
 	vector<triangle> triangles;
 
 
-	create_torus(triangles);
+	//create_torus(triangles);
 
 
-	if (0 < triangles.size())
-		write_triangles_to_binary_stereo_lithography_file(triangles, "out.stl");
+	//if (0 < triangles.size())
+	//	write_triangles_to_binary_stereo_lithography_file(triangles, "out.stl");
 
-	return 0;
-
+	//return 0;
 
 
 
@@ -220,7 +64,18 @@ int main(void)
 			if (true == make_border && (x == 0 || y == 0 || z == 0 || x == res - 1 || y == res - 1 || z == res - 1))
 				xyplane0[x * res + y] = border_value;
 			else
-				xyplane0[x * res + y] = h(pos.x, pos.y, pos.z, n, radius, outer_radius);
+			{
+
+				vertex_3 centre(1, 0, 0);
+				xyplane0[x * res + y] = h1(centre, pos, genus, radius, outer_radius);
+				
+				centre.x = -1;
+				xyplane0[x * res + y] *= h1(centre, pos, genus, radius, outer_radius);
+
+			
+
+
+			}
 		}
 	}
 
@@ -246,7 +101,15 @@ int main(void)
 				if (true == make_border && (x == 0 || y == 0 || z == 0 || x == res - 1 || y == res - 1 || z == res - 1))
 					xyplane1[x * res + y] = border_value;
 				else
-					xyplane1[x * res + y] = h(pos.x, pos.y, pos.z, n, radius, outer_radius);
+				{
+					vertex_3 centre(1, 0, 0);
+					xyplane1[x * res + y] = h1(centre, pos, genus, radius, outer_radius);
+
+					centre.x = -1;
+					xyplane1[x * res + y] *= h1(centre, pos, genus, radius, outer_radius);
+
+				
+				}
 			}
 		}
 
