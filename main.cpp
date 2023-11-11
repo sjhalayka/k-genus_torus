@@ -21,7 +21,7 @@ int main(void)
 	const float grid_min = -grid_max;
 	const size_t res = 300;
 	const bool make_border = true;
-	const float isovalue = 4.0f; // bigger than zero
+	const float isovalue = 4000.0f; // bigger than zero
 	const float border_value = 1.0f + isovalue;
 	const int genus = 5;
 	const float radius = 0.1f;
