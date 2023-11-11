@@ -21,9 +21,9 @@ int main(void)
 	const float grid_min = -grid_max;
 	const size_t res = 300;
 	const bool make_border = true;
-	const float isovalue = 1.0f; // bigger than zero
+	const float isovalue = 4.0f; // bigger than zero
 	const float border_value = 1.0f + isovalue;
-	const int genus = 3;
+	const int genus = 5;
 	const float radius = 0.1f;
 	const float outer_radius = 1.0f;
 
@@ -58,8 +58,8 @@ int main(void)
 
 				for (size_t i = 0; i < genus; i++, angle += step_angle)
 				{
-					float x_angle = kissing_radius* cos(angle);
-					float y_angle = kissing_radius* sin(angle);
+					float x_angle = kissing_radius * cos(angle);
+					float y_angle = kissing_radius * sin(angle);
 
 					vertex_3 centre(x_angle, y_angle, 0);
 
