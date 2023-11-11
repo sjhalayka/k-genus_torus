@@ -30,7 +30,6 @@ int main(void)
 	const float circumference = (radius + outer_radius) * 2.0f * genus;
 	const float kissing_radius = circumference / (2.0f * pi);
 
-
 	vector<triangle> triangles;
 
 	vector<float> xyplane0(res * res, 0);
@@ -64,14 +63,10 @@ int main(void)
 					vertex_3 centre(x_angle, y_angle, 0);
 
 					if (i == 0)
-						xyplane0[x * res + y] = h1(centre, pos, radius, outer_radius);
+						xyplane0[x*res + y] = h1(centre, pos, radius, outer_radius);
 					else
-						xyplane0[x * res + y] *= h1(centre, pos, radius, outer_radius);
+						xyplane0[x*res + y] *= h1(centre, pos, radius, outer_radius);
 				}
-
-
-
-
 			}
 		}
 	}
@@ -110,12 +105,10 @@ int main(void)
 						vertex_3 centre(x_angle, y_angle, 0);
 
 						if (i == 0)
-							xyplane1[x * res + y] = h1(centre, pos, radius, outer_radius);
+							xyplane1[x*res + y] = h1(centre, pos, radius, outer_radius);
 						else
-							xyplane1[x * res + y] *= h1(centre, pos, radius, outer_radius);
+							xyplane1[x*res + y] *= h1(centre, pos, radius, outer_radius);
 					}
-
-
 				}
 			}
 		}
