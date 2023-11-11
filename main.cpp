@@ -27,6 +27,10 @@ int main(void)
 	const float radius = 0.1f;
 	const float outer_radius = 1.0f;
 
+	const float circumference = (radius + outer_radius) * 2.0f * genus;
+	const float kissing_radius = circumference / (2.0f * pi);
+
+
 	vector<triangle> triangles;
 
 	vector<float> xyplane0(res * res, 0);
@@ -54,8 +58,8 @@ int main(void)
 
 				for (size_t i = 0; i < genus; i++, angle += step_angle)
 				{
-					float x_angle = (outer_radius + 2*radius) * cos(angle);
-					float y_angle = (outer_radius + 2*radius) * sin(angle);
+					float x_angle = kissing_radius* cos(angle);
+					float y_angle = kissing_radius* sin(angle);
 
 					vertex_3 centre(x_angle, y_angle, 0);
 
@@ -100,8 +104,8 @@ int main(void)
 
 					for (size_t i = 0; i < genus; i++, angle += step_angle)
 					{
-						float x_angle = (outer_radius + 2*radius) * cos(angle);
-						float y_angle = (outer_radius + 2*radius) * sin(angle);
+						float x_angle = kissing_radius*cos(angle);
+						float y_angle = kissing_radius*sin(angle);
 
 						vertex_3 centre(x_angle, y_angle, 0);
 
