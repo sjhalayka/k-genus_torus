@@ -3,7 +3,7 @@
 
 
 
-float h1(const vertex_3& centre, const vertex_3& pos, const int n, const float r, const float R)
+float h1(const vertex_3& centre, const vertex_3& pos, const float r, const float R)
 {
 	float x = centre.x - pos.x;
 	float y = centre.y - pos.y;
@@ -16,34 +16,18 @@ float h1(const vertex_3& centre, const vertex_3& pos, const int n, const float r
 
 int main(void)
 {
+	const float pi = 4.0f * atanf(1.0f);
 	const float grid_max = 5.0;
 	const float grid_min = -grid_max;
 	const size_t res = 300;
 	const bool make_border = true;
 	const float isovalue = 0.001f;
 	const float border_value = 1.0f + isovalue;
-	const int genus = 1;
+	const int genus = 3;
 	const float radius = 0.1f;
 	const float outer_radius = 1.0f;
 
-
 	vector<triangle> triangles;
-
-
-	//create_torus(triangles);
-
-
-	//if (0 < triangles.size())
-	//	write_triangles_to_binary_stereo_lithography_file(triangles, "out.stl");
-
-	//return 0;
-
-
-
-
-
-
-
 
 	vector<float> xyplane0(res * res, 0);
 	vector<float> xyplane1(res * res, 0);
@@ -65,14 +49,23 @@ int main(void)
 				xyplane0[x * res + y] = border_value;
 			else
 			{
+				const float step_angle = 2.0f * pi / genus;
+				float angle = step_angle;
 
-				vertex_3 centre(1, 0, 0);
-				xyplane0[x * res + y] = h1(centre, pos, genus, radius, outer_radius);
-				
-				centre.x = -1;
-				xyplane0[x * res + y] *= h1(centre, pos, genus, radius, outer_radius);
+				for (size_t i = 0; i < genus; i++, angle += step_angle)
+				{
+					float x_angle = (outer_radius + 2*radius) * cos(angle);
+					float y_angle = (outer_radius + 2*radius) * sin(angle);
 
-			
+					vertex_3 centre(x_angle, y_angle, 0);
+
+					if (i == 0)
+						xyplane0[x * res + y] = h1(centre, pos, radius, outer_radius);
+					else
+						xyplane0[x * res + y] *= h1(centre, pos, radius, outer_radius);
+				}
+
+
 
 
 			}
@@ -102,13 +95,23 @@ int main(void)
 					xyplane1[x * res + y] = border_value;
 				else
 				{
-					vertex_3 centre(1, 0, 0);
-					xyplane1[x * res + y] = h1(centre, pos, genus, radius, outer_radius);
+					const float step_angle = 2.0f * pi / genus;
+					float angle = step_angle;
 
-					centre.x = -1;
-					xyplane1[x * res + y] *= h1(centre, pos, genus, radius, outer_radius);
+					for (size_t i = 0; i < genus; i++, angle += step_angle)
+					{
+						float x_angle = (outer_radius + 2*radius) * cos(angle);
+						float y_angle = (outer_radius + 2*radius) * sin(angle);
 
-				
+						vertex_3 centre(x_angle, y_angle, 0);
+
+						if (i == 0)
+							xyplane1[x * res + y] = h1(centre, pos, radius, outer_radius);
+						else
+							xyplane1[x * res + y] *= h1(centre, pos, radius, outer_radius);
+					}
+
+
 				}
 			}
 		}
